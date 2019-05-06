@@ -12,6 +12,7 @@ BSON
 
 require("../static/todo.scss");
 
+
 let appId = "aplicacion-jdxoa";
 
 const client = Stitch.initializeDefaultAppClient(appId);
@@ -116,8 +117,8 @@ render() {
       {!authed
          ? <div className="login-links-panel">
             <h2>Inicio de sesión</h2>
-	    <h3>Por favor seleccione un método para iniciar sesión.</h3>
-	    <h4>AVISO: El acceso solo se puede por Facebook. No lo intente por Google. Gracias por su comprensión</h4>
+	         <h3>Por favor seleccione un método para iniciar sesión.</h3>
+	         <h4>AVISO: El acceso solo se puede por Facebook. No lo intente por Google. Gracias por su comprensión</h4>
             <div
                onClick={() => this.client.auth.loginWithRedirect(new GoogleRedirectCredential())}
                className="signin-button"
@@ -167,7 +168,7 @@ render() {
 }
 };
 
-var TodoList = class extends React.Component {
+var ProfesorList = class extends React.Component {
    loadList() {
       if (!this.client.auth.isLoggedIn) {
          return;
@@ -208,7 +209,7 @@ addItem(event) {
    }
    this.setState({ requestPending: true });
    this.items
-      .insertOne(event)
+      .insertOne(this.setState.items)
       .then(() => {
       this._newitem.value = "";
       this.loadList();
@@ -229,11 +230,70 @@ setPending() {
 render() {
    let loggedInResult = (
       <div>
-      <div className="controls">
+      <div className="meterProfe">
+      <form onSubmit={e => this.addItem(e)}>
+      <div>
+        <label for="nombre">Nombre:</label>
+        <input type="text" className="meterProfe" value={this.state.nombre} name="nombre" 
+        onChange={(ev) => { this.setState({ items: { ...this.state.form, nombre: ev.target.value } }) }}/>
+      </div>
+      <div>
+        <label for="primerApellido">Primer Apellido:</label>
+        <input type="text" className="meterProfe" value={this.state.primerApellido} name="primerApellido" />
+      </div>
+      <div>
+        <label for="segundoApellido">Segundo Apellido:</label>
+        <input type="text" className="meterProfe" value={this.state.segundoApellido} name="segundoApellido" />
+      </div>
+      <div>
+        <label for="sexo">Sexo:</label>
+        <select className="meterProfe" value= {this.state.sexo} name="sexo">
+		      <option>Masculino</option>
+		      <option>Femenino </option>
+	      </select>
+      </div>
+      <div>
+        <label for="fechaNacimiento">Fecha de Nacimiento:</label>
+        <input type="date" className="meterProfe" value={this.state.fechaNacimiento} name="fechaNacimiento" min="1900-01-01" max="2100-12-31"/>
+      </div>
+      <div>
+        <label for="estadoCivil">Estado Civil:</label>
+        <select className="meterProfe" value={this.state.estadoCivil} name="estadoCivil">
+		      <option>Soltero</option>
+		      <option>Casado </option>
+            <option>Divorciado</option>
+		      <option>Viudo </option>
+	      </select>
+      </div>
+      <div>
+        <label for="telCasa">Teléfono de casa:</label>
+        <input type="text" className="meterProfe" value={this.state.telCasa} name="telCasa" />
+      </div>
+      <div>
+        <label for="telTrabajo">Teléfono de trabajo:</label>
+        <input type="text" className="meterProfe" value={this.state.telTrabajo} name="telTrabajo" />
+      </div>
+      <div>
+        <label for="fax">Fax:</label>
+        <input type="text" className="meterProfe" value={this.state.fax} placeholder="En caso de no contar con fax, colocar No aplica" name="fax" />
+      </div>
+      <div>
+        <label for="correoPersonal">Correo Personal:</label>
+        <input type="email" className="meterProfe" value={this.state.correoPersonal} name="orreoPersonal" />
+      </div>
+      <div>
+        <label for="correoAcademic">Correo Académico:</label>
+        <input type="email" className="meterProfe" value={this.state.correoAcademic} name="correoAcademic" />
+      </div>  
+      <div class="button">
+        <button type="submit" onClick={event => this.addItem}>Enviar datos del profesor</button>
+      </div>
+      </form>        
+         
          <input
             type="text"
             className="new-item"
-            placeholder="add a new item..."
+            placeholder="Profesor"
             ref={n => {
             this._newitem = n;
             }}
@@ -252,8 +312,7 @@ render() {
 
       </div>
       </div>
-      <script src="https://s3.amazonaws.com/stitch-sdks/js/bundles/4.0.13/stitch.js"></script>
-      <ul className="items-list">
+     <ul className="items-list">
          {this.state.items.length == 0
             ? <div className="list-empty-label">Lista vacía</div>
             : this.state.items.map(item => {
@@ -278,7 +337,7 @@ var Home = function(props) {
 return (
    <div>
       <AuthControls {...props}/>
-      <TodoList {...props}/>
+      <ProfesorList {...props}/>
    </div>
 );
 };
@@ -432,6 +491,16 @@ render() {
 };
 
 let items = db.collection("Profesor");
+let areas = db.collection("area");
+let ca = db.collection("cuerpoAcademic");
+let des = db.collection("des"); //DES: Dependencia de Educacion Superior
+let discipline = db.collection("disciplina");
+let grades = db.collection("estudio");
+let ies = db.collection("ies"); //IES: Instituto de Educación Superior
+let individualizada = db.collection("individualizada");
+let investigation = db.collection("investigacion");
+let io = db.collection("io");
+let laboral = db.collection("laboral"); 
 let users = db.collection("users");
 let props = {client, items, users};
 
