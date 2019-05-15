@@ -12,12 +12,9 @@ BSON
 
 require("../static/todo.scss");
 
+const client = Stitch.initializeDefaultAppClient("aplicacion-jdxoa");
 
-let appId = "aplicacion-jdxoa";
-
-const client = Stitch.initializeDefaultAppClient(appId);
-
-const db = client.getServiceClient(RemoteMongoClient.factory, 
+const db = client.getServiceClient(RemoteMongoClient.factory,
    "mongodb-atlas").db('Prodep');
 
 let TodoItem = class extends React.Component {
@@ -203,17 +200,25 @@ componentDidMount() {
    this.loadList();
 }
 
+inputChange(event){
+   const newProfe= {
+      [event.target.name]: event.target.value
+   };
+}
+
 addItem(event) {
    if (event.keyCode != 13) {
       return;
    }
+   alert("Aceptado: " +this.state.nombre);
    this.setState({ requestPending: true });
    this.items
-      .insertOne(this.setState.items)
+      .insertOne(newProfe)
       .then(() => {
       this._newitem.value = "";
       this.loadList();
       });
+      event.preventDefault();
 }
 
 clear() {
@@ -230,91 +235,72 @@ setPending() {
 render() {
    let loggedInResult = (
       <div>
-      <div className="meterProfe">
-      <form onSubmit={e => this.addItem(e)}>
-      <div>
-        <label for="nombre">Nombre:</label>
-        <input type="text" className="meterProfe" value={this.state.nombre} name="nombre" 
-        onChange={(ev) => { this.setState({ items: { ...this.state.form, nombre: ev.target.value } }) }}/>
-      </div>
-      <div>
-        <label for="primerApellido">Primer Apellido:</label>
-        <input type="text" className="meterProfe" value={this.state.primerApellido} name="primerApellido" />
-      </div>
-      <div>
-        <label for="segundoApellido">Segundo Apellido:</label>
-        <input type="text" className="meterProfe" value={this.state.segundoApellido} name="segundoApellido" />
-      </div>
-      <div>
-        <label for="sexo">Sexo:</label>
-        <select className="meterProfe" value= {this.state.sexo} name="sexo">
-		      <option>Masculino</option>
-		      <option>Femenino </option>
-	      </select>
-      </div>
-      <div>
-        <label for="fechaNacimiento">Fecha de Nacimiento:</label>
-        <input type="date" className="meterProfe" value={this.state.fechaNacimiento} name="fechaNacimiento" min="1900-01-01" max="2100-12-31"/>
-      </div>
-      <div>
-        <label for="estadoCivil">Estado Civil:</label>
-        <select className="meterProfe" value={this.state.estadoCivil} name="estadoCivil">
-		      <option>Soltero</option>
-		      <option>Casado </option>
-            <option>Divorciado</option>
-		      <option>Viudo </option>
-	      </select>
-      </div>
-      <div>
-        <label for="telCasa">Teléfono de casa:</label>
-        <input type="text" className="meterProfe" value={this.state.telCasa} name="telCasa" />
-      </div>
-      <div>
-        <label for="telTrabajo">Teléfono de trabajo:</label>
-        <input type="text" className="meterProfe" value={this.state.telTrabajo} name="telTrabajo" />
-      </div>
-      <div>
-        <label for="fax">Fax:</label>
-        <input type="text" className="meterProfe" value={this.state.fax} placeholder="En caso de no contar con fax, colocar No aplica" name="fax" />
-      </div>
-      <div>
-        <label for="correoPersonal">Correo Personal:</label>
-        <input type="email" className="meterProfe" value={this.state.correoPersonal} name="orreoPersonal" />
-      </div>
-      <div>
-        <label for="correoAcademic">Correo Académico:</label>
-        <input type="email" className="meterProfe" value={this.state.correoAcademic} name="correoAcademic" />
-      </div>  
-      <div class="button">
-        <button type="submit" onClick={event => this.addItem}>Enviar datos del profesor</button>
-      </div>
-      </form>        
-         
-         <input
-            type="text"
-            className="new-item"
-            placeholder="Profesor"
-            ref={n => {
-            this._newitem = n;
-            }}
-            onKeyDown={e => this.addItem(e)}
-         />
+      <div className="agregaProfe">
+      <form onSubmit={this.addItem.bind(this)}>
+         <div>
+            <label for="nombre">Nombre:</label>
+            <input type="text" className="agregaProfe" value={this.state.nombre} name="nombre" onChange={this.inputChange.bind(this)}/>
+         </div>
+         <div>
+            <label for="primerApellido">Primer Apellido:</label>
+            <input type="text" className="agregaProfe" value={this.state.primerApellido} 
+            name="primerApellido" onChange={this.inputChange.bind(this)}/>
+         </div>
+         <div>
+            <label for="segundoApellido">Segundo Apellido:</label>
+            <input type="text" className="agregaProfe" value={this.state.segundoApellido} name="segundoApellido" onChange={this.inputChange.bind(this)}/>
+         </div>
+         <div>
+            <label for="sexo">Sexo:</label>
+            <select className="agregaProfe" value= {this.state.sexo} name="sexo" onChange={this.inputChange.bind(this)}>
+                  <option>Masculino</option>
+                  <option>Femenino </option>
+            </select>
+         </div>
+         <div>
+            <label for="fechaNacimiento">Fecha de Nacimiento:</label>
+            <input type="date" className="agregaProfe" value={this.state.fechaNacimiento} name="fechaNacimiento" min="1900-01-01" max="2100-12-31" onChange={this.inputChange.bind(this)}/>
+         </div>
+         <div>
+            <label for="estadoCivil">Estado Civil:</label>
+            <select className="agregaProfe" value={this.state.estadoCivil} name="estadoCivil" onChange={this.inputChange.bind(this)}>
+                  <option>Soltero</option>
+                  <option>Casado </option>
+                  <option>Divorciado</option>
+                  <option>Viudo </option>
+            </select>
+         </div>
+         <div>
+            <label for="telCasa">Teléfono de casa:</label>
+            <input type="text" className="agregaProfe" value={this.state.telCasa} name="telCasa" onChange={this.inputChange.bind(this)}/>
+         </div>
+         <div>
+            <label for="telTrabajo">Teléfono de trabajo:</label>
+            <input type="text" className="agregaProfe" value={this.state.telTrabajo} name="telTrabajo" onChange={this.inputChange.bind(this)}/>
+         </div>
+         <div>
+            <label for="fax">Fax:</label>
+            <input type="text" className="agregaProfe" value={this.state.fax} placeholder="En caso de no contar con fax, colocar No aplica" name="fax" onChange={this.inputChange.bind(this)}/>
+         </div>
+         <div>
+            <label for="correoPersonal">Correo Personal:</label>
+            <input type="email" className="agregaProfe" value={this.state.correoPersonal} name="correoPersonal" onChange={this.inputChange.bind(this)}/>
+         </div>
+         <div>
+            <label for="correoAcademic">Correo Académico:</label>
+            <input type="email" className="agregaProfe" value={this.state.correoAcademic} name="correoAcademic" onChange={this.inputChange.bind(this)}/>
+         </div>
+         <div class="button">
+         <input type="submit" value="Enviar datos" />
+         </div>
+      </form>
          {this.state.items.filter(x => x.checked).length > 0
-            ? <div
-               href=""
-               className="cleanup-button"
-               onClick={() => this.clear()}
-            >
-               Borrar elemento(s)
-            </div>
+            ? <div href="" className="cleanup-button" onClick={() => this.clear()}>Borrar elmento(s)</div>
             : null}
-      <div className="">
-
       </div>
-      </div>
-     <ul className="items-list">
+      <ul className="items-list">
          {this.state.items.length == 0
-            ? <div className="list-empty-label">Lista vacía</div>
+            ? <div className="list-empty-label">Lista vacía. Ingrese datos.</div>
             : this.state.items.map(item => {
                return (
                   <TodoItem
